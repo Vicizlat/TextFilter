@@ -1,0 +1,92 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TextFilter"
+        xmlns:ViewModels="clr-namespace:TextFilter.ViewModels" x:Class="TextFilter.MainWindow"
+        mc:Ignorable="d"
+        Loaded="Window_Loaded"
+        Title="Text Filter" WindowStartupLocation="CenterScreen" MinWidth="900" MinHeight="600" Width="900" Height="700">
+    <Border Padding="20">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="80"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="20"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" Grid.Row="0" Content="Load Source File" Height="20"
+                            Command="{Binding LoadSourceTextCommand, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBox Grid.Column="0" Grid.Row="1" Padding="2" Margin="0,0,0,10" AcceptsReturn="True"
+                             VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+                             Text="{Binding TextBoxModel.SourceText, UpdateSourceTrigger=PropertyChanged}"/>
+            <Button Grid.Column="2" Grid.Row="0" Content="Load Filter File" Height="20"
+                            Command="{Binding LoadFilterTextCommand, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBox Grid.Column="2" Grid.Row="1" Padding="2" Margin="0,0,0,10" AcceptsReturn="True"
+                             VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+                             Text="{Binding TextBoxModel.FilterText, UpdateSourceTrigger=PropertyChanged}"/>
+            <Rectangle Grid.Column="0" Grid.Row="2" VerticalAlignment="Top" Height="40" Stroke="#FF707070"/>
+            <Rectangle Grid.Column="0" Grid.Row="2" VerticalAlignment="Bottom" Height="40" Stroke="#FF707070"/>
+            <Grid Grid.Column="0" Grid.Row="2" ToolTip="If &quot;Run Filter&quot; AND &quot;Remove Duplicates&quot; are both selected, the filtered result will be with removed duplicates.">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <CheckBox Grid.Column="0" Height="40" Cursor="Hand" Content="Run Filter (Default)" FontWeight="Bold"
+                      VerticalAlignment="Top" VerticalContentAlignment="Center"
+                      IsChecked="{Binding CheckboxModel.RunFilter, UpdateSourceTrigger=PropertyChanged}"/>
+                <CheckBox Grid.Column="0" Height="40" Cursor="Hand" Content="Remove Duplicates"
+                      VerticalAlignment="Bottom" VerticalContentAlignment="Center"
+                      IsChecked="{Binding CheckboxModel.RemoveDuplicates, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBlock Grid.Column="1" Height="40" Padding="4" TextWrapping="Wrap" FontStyle="Italic" VerticalAlignment="Top"
+                           Text="Match the source text against the filter. Hover the mouse over for more info."/>
+                <TextBlock Grid.Column="1" Height="40" Padding="4" TextWrapping="Wrap" FontStyle="Italic" VerticalAlignment="Bottom"
+                           Text="Remove duplicate lines from the Source Text. Hover over for more info."/>
+            </Grid>
+            <Button Grid.Column="2" Grid.Row="2" Grid.ColumnSpan="3" Height="55" FontSize="20" FontWeight="Bold" VerticalAlignment="Top"
+                    Command="{Binding StartButtonCommand, UpdateSourceTrigger=PropertyChanged}"
+                    Content="{Binding StartButtonTextModel.StartButtonText, UpdateSourceTrigger=PropertyChanged}"/>
+            <ProgressBar Grid.Column="2" Grid.Row="2" Grid.ColumnSpan="3" Height="25" VerticalAlignment="Bottom"
+                         Value="{Binding ProgressAndResultsModel.ProgBarChange, UpdateSourceTrigger=PropertyChanged}"
+                         Maximum="{Binding ProgressAndResultsModel.ProgBarMax, UpdateSourceTrigger=PropertyChanged}"/>
+            <Grid Grid.Column="2" Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="20"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Margin="0,0,0,5" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                           Text="{Binding ProgressAndResultsModel.ProgBarChange, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBlock Grid.Column="1" Margin="0,0,0,5" HorizontalAlignment="Center" VerticalAlignment="Bottom" Text=" / "/>
+                <TextBlock Grid.Column="2" Margin="0,0,0,5" HorizontalAlignment="Left" VerticalAlignment="Bottom"
+                           Text="{Binding ProgressAndResultsModel.ProgBarMax, UpdateSourceTrigger=PropertyChanged}"/>
+            </Grid>
+            <TextBlock Grid.Column="0" Grid.Row="3" Text="Leftovers from the filter:" Margin="0,10,0,0"/>
+            <TextBlock Grid.Column="0" Grid.Row="3" HorizontalAlignment="Right" Margin="0,10,0,0" Text="{Binding ProgressAndResultsModel.NoMatchCount}"/>
+            <TextBox Grid.Column="0" Grid.Row="4" Padding="2" IsReadOnly="True" IsReadOnlyCaretVisible="True"
+                     VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+                     Text="{Binding TextBoxModel.LeftoverText, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock Grid.Column="2" Grid.Row="3" Text="Results from the filter:" Margin="0,10,0,0"/>
+            <TextBlock Grid.Column="2" Grid.Row="3" HorizontalAlignment="Right" Margin="0,10,0,0" Text="{Binding ProgressAndResultsModel.MatchCount}"/>
+            <TextBox Grid.Column="2" Grid.Row="4" Padding="2" IsReadOnly="True" IsReadOnlyCaretVisible="True"
+                             VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+                             Text="{Binding TextBoxModel.FilteredText, UpdateSourceTrigger=PropertyChanged}"/>
+            <Button Grid.Column="0" Grid.Row="5" Padding="30,0" Content="Save Leftovers" HorizontalAlignment="Left"
+                        Command="{Binding SaveLeftoverResultTextCommand}"/>
+            <Button Grid.Column="0" Grid.Row="5" Padding="30,0" Content="Load as Source" HorizontalAlignment="Right"
+                        Command="{Binding LoadLeftoverAsSourceCommand}"/>
+            <Button Grid.Column="2" Grid.Row="5" Padding="30,0" Content="Save Result"  HorizontalAlignment="Left"
+                        Command="{Binding SaveFilteredResultTextCommand}"/>
+            <Button Grid.Column="2" Grid.Row="5" Padding="30,0" Content="Load as Source" HorizontalAlignment="Right"
+                        Command="{Binding LoadFilteredAsSourceCommand}"/>
+        </Grid>
+    </Border>
+</Window>
